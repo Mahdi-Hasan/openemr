@@ -12,6 +12,7 @@
 namespace OpenEMR\RestControllers\FHIR;
 
 use OpenApi\Attributes as OA;
+use OpenEMR\Core\OEGlobalsBag;
 use OpenEMR\FHIR\Config\ServerConfig;
 use OpenEMR\FHIR\R4\FHIRDomainResource\FHIRCapabilityStatement;
 use OpenEMR\FHIR\R4\FHIRElement\FHIRCanonical;
@@ -31,6 +32,7 @@ use OpenEMR\FHIR\R4\FHIRResource\FHIRCapabilityStatement\FHIRCapabilityStatement
 use OpenEMR\FHIR\R4\FHIRResource\FHIRCapabilityStatement\FHIRCapabilityStatementSoftware;
 use OpenEMR\FHIR\SMART\Capability;
 use OpenEMR\RestControllers\RestControllerHelper;
+use OpenEMR\Services\SoftwareVersion;
 
 /**
  * Supports REST interactions with the FHIR METADATA
@@ -39,10 +41,12 @@ class FhirMetaDataRestController
 {
     private readonly RestControllerHelper $restHelper;
     private readonly ServerConfig $config;
+    private readonly OEGlobalsBag $globals;
 
-    public function __construct()
+    public function __construct(?ServerConfig $config = null, ?OEGlobalsBag $globals = null)
     {
-        $this->config = new ServerConfig();
+        $this->config = $config ?? new ServerConfig();
+        $this->globals = $globals ?? OEGlobalsBag::getInstance();
         $this->restHelper = new RestControllerHelper($this->config->getFhirUrl());
     }
 
@@ -61,7 +65,7 @@ class FhirMetaDataRestController
         }
         $capabilityStatement = new FHIRCapabilityStatement();
         // TODO: @adunsulag we need to figure out capability statements for different FHIR versions/profiles
-        $capabilityStatement->addInstantiates('http://hl7.org/fhir/us/core/CapabilityStatement/us-core-server');
+        $capabilityStatement->addInstantiates(new FHIRCanonical('http://hl7.org/fhir/us/core/CapabilityStatement/us-core-server'));
         $pubStatus = new FHIRPublicationStatus();
         $pubStatus->setValue("active");
         $capabilityStatement->setStatus($pubStatus);
@@ -87,12 +91,7 @@ class FhirMetaDataRestController
         $restObj->setSecurity($this->getRestSecurity());
 
         $capabilityStatement->addRest($restObj);
-        $composerStr = file_get_contents($this->config->getWebServerRoot() . "/composer.json");
-        $composerObj = json_decode($composerStr, true);
-        $software = new FHIRCapabilityStatementSoftware();
-        $software->setName(new FHIRString("OpenEMR"));
-        $software->setVersion($composerObj["version"]);
-        $capabilityStatement->setSoftware($software);
+        $capabilityStatement->setSoftware($this->getSoftware());
 
         // add the fact that we support Bulk FHIR operations.
         $capabilityStatement->addInstantiates(new FHIRCanonical("http://hl7.org/fhir/uv/bulkdata/CapabilityStatement/bulk-data"));
@@ -100,6 +99,18 @@ class FhirMetaDataRestController
         return $capabilityStatement;
     }
 
+
+    /**
+     * Describes the running OpenEMR release. The version comes from version.php
+     * (loaded into globals at bootstrap); composer.json has no version key.
+     */
+    public function getSoftware(): FHIRCapabilityStatementSoftware
+    {
+        $software = new FHIRCapabilityStatementSoftware();
+        $software->setName(new FHIRString("OpenEMR"));
+        $software->setVersion(new FHIRString(SoftwareVersion::fromGlobals($this->globals)->full));
+        return $software;
+    }
 
     /**
      * Creates the Security Capability Statement and returns it.

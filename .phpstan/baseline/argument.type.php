@@ -57627,21 +57627,6 @@ $ignoreErrors[] = [
     'path' => __DIR__ . '/../../src/RestControllers/FHIR/FhirMedicationRestController.php',
 ];
 $ignoreErrors[] = [
-    'message' => '#^Parameter \\#1 \\$instantiates of method OpenEMR\\\\FHIR\\\\R4\\\\FHIRDomainResource\\\\FHIRCapabilityStatement\\:\\:addInstantiates\\(\\) expects OpenEMR\\\\FHIR\\\\R4\\\\FHIRElement\\\\FHIRCanonical, string given\\.$#',
-    'count' => 1,
-    'path' => __DIR__ . '/../../src/RestControllers/FHIR/FhirMetaDataRestController.php',
-];
-$ignoreErrors[] = [
-    'message' => '#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#',
-    'count' => 1,
-    'path' => __DIR__ . '/../../src/RestControllers/FHIR/FhirMetaDataRestController.php',
-];
-$ignoreErrors[] = [
-    'message' => '#^Parameter \\#1 \\$version of method OpenEMR\\\\FHIR\\\\R4\\\\FHIRResource\\\\FHIRCapabilityStatement\\\\FHIRCapabilityStatementSoftware\\:\\:setVersion\\(\\) expects OpenEMR\\\\FHIR\\\\R4\\\\FHIRElement\\\\FHIRString, mixed given\\.$#',
-    'count' => 1,
-    'path' => __DIR__ . '/../../src/RestControllers/FHIR/FhirMetaDataRestController.php',
-];
-$ignoreErrors[] = [
     'message' => '#^Parameter \\#1 \\$processingResult of static method OpenEMR\\\\RestControllers\\\\RestControllerHelper\\:\\:handleFhirProcessingResult\\(\\) expects OpenEMR\\\\Validators\\\\ProcessingResult, mixed given\\.$#',
     'count' => 1,
     'path' => __DIR__ . '/../../src/RestControllers/FHIR/FhirObservationRestController.php',

@@ -36847,11 +36847,6 @@ $ignoreErrors[] = [
     'path' => __DIR__ . '/../../src/RestControllers/Config/RestConfig.php',
 ];
 $ignoreErrors[] = [
-    'message' => '#^Cannot access offset \'version\' on mixed\\.$#',
-    'count' => 1,
-    'path' => __DIR__ . '/../../src/RestControllers/FHIR/FhirMetaDataRestController.php',
-];
-$ignoreErrors[] = [
     'message' => '#^Cannot access offset \'_outputFormat\' on mixed\\.$#',
     'count' => 1,
     'path' => __DIR__ . '/../../src/RestControllers/FHIR/Operations/FhirOperationExportRestController.php',
